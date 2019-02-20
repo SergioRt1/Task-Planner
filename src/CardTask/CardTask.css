@@ -1,0 +1,8 @@
+.gridCard {
+    display: grid;
+    grid-template-columns: 10fr 1fr;
+}
+
+.margin {
+    margin: 15px;
+}

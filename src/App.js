@@ -1,32 +1,31 @@
-import React, { Component } from 'react';
-import logo from './logo.svg';
+import React, {Component} from 'react';
 import './App.css';
 import {Login} from './Login/Login';
+import PersistentDrawerLeft from "./Drawer/Drawer";
 
 class App extends Component {
-  render() {
-    return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
-        <main>
-            <Login/>
-        </main>
-      </div>
-    );
-  }
+
+    constructor (props){
+        super(props);
+        localStorage.setItem('userDefault',"SergioRt");
+        localStorage.setItem('passwordDefault',"12345");
+    }
+
+    render() {
+        const inf = {
+            "name":"Sergio Rodriguez",
+            "email":"sergio200035@gmail.com"
+        }
+        return (
+            <div>
+                {localStorage.getItem('page') === 'home' ?
+                    <PersistentDrawerLeft info={inf}/> :
+                    <Login/>
+                }
+            </div>
+        );
+    }
 }
+
 
 export default App;

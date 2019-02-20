@@ -1,0 +1,46 @@
+.paper {
+    width: 35%;
+    min-width: 250px;
+    max-width: 350px;
+    margin-top: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 25px 25px 25px 25px;
+}
+
+.layout {
+    width: 70%;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.img {
+    with: 100px;
+    height: 100px;
+    margin: 10px;
+}
+.img2 {
+    with: 50px;
+    height: 50px;
+    margin: 8px;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: 1fr 3fr;
+}
+
+.bottom {
+    position:absolute;
+    align-self: center;
+    bottom: 5%;
+}
+
+.rigth {
+    text-align: right;
+    margin: 10px;
+}
