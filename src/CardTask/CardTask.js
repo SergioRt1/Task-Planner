@@ -32,7 +32,7 @@ export class CardTask extends React.Component {
                         <CardContent>
                             <div className="gridCard">
                                 <div>
-                                    <Typography variant="h6">
+                                    <Typography variant="h5">
                                         {this.props.info.description}
                                     </Typography>
                                 </div>
@@ -42,17 +42,16 @@ export class CardTask extends React.Component {
                                     {this.props.info.status === "In Progress" ? <DonutLarge/> : <div/>}
                                 </div>
                             </div>
-                            <Typography variant="h6">
+                            <Typography variant="h5">
                                 {this.props.info.status} - {new Date(this.props.info.dueDate).toDateString()}
                             </Typography>
 
-                            <Typography variant="h6">
+                            <Typography variant="h5">
                                 {this.props.info.responsible.name}
                             </Typography>
-                            <Typography color="textSecondary" variant="h7">
+                            <Typography color="textSecondary" variant="h6">
                                 {this.props.info.responsible.email}
                             </Typography>
-
                         </CardContent>
                     </Card>
                 </main>

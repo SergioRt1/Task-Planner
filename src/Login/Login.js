@@ -19,10 +19,13 @@ export class Login extends React.Component {
     handleSubmit(e) {
         if (localStorage.getItem('userDefault') === this.state.username && localStorage.getItem('passwordDefault') === this.state.password){
             localStorage.setItem('page', "home");
-        }
+        }else alert("Wrong credentials")
         this.setState({username: "", password: ""});
     }
 
+    handleRedirect(e) {
+        localStorage.setItem('page', "newAccount");
+    }
 
     render() {
         return (
@@ -43,7 +46,7 @@ export class Login extends React.Component {
                             </Button>
                         </form>
                         <br/>
-                        <Link href="#" >Create account</Link>
+                        <Link href="/UserProfile" onClick={this.handleRedirect}>Create account</Link>
                     </Paper>
                 </main>
             </React.Fragment>

@@ -10,15 +10,18 @@ import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
+import MoreVert from '@material-ui/icons/MoreVert';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
-import Fab from '@material-ui/core/Fab';
 import ExitToApp from '@material-ui/icons/ExitToApp';
 import Edit from '@material-ui/icons/Edit';
 import Link from '@material-ui/core/Link';
-import AddIcon from '@material-ui/icons/Add';
 import userimage from './../user.svg'
 import {CardTask} from "../CardTask/CardTask";
+import FloatingActionButton from "../FloatingActionButton";
+import AddIcon from '@material-ui/icons/Add';
+import MenuItem from "@material-ui/core/MenuItem";
+import Menu from "@material-ui/core/Menu";
 
 const drawerWidth = 320;
 
@@ -80,35 +83,12 @@ const styles = theme => ({
 });
 
 class PersistentDrawerLeft extends React.Component {
-    state = {
-        open: false,
-        tasks: [
-            {"description": "Implementation",
-                "responsible": {
-                    "name": "Sergio Rodriguez",
-                    "email": "sergio200035@gmail"
-                },
-                "status": "Completed",
-                "dueDate": 956464645646
-            },
-            {"description": "some description text ",
-                "responsible": {
-                    "name": "Santiago Carrillo",
-                    "email": "sancarbar@gmail"
-                },
-                "status": "Ready",
-                "dueDate": 156464648649
-            },
-            {"description": "Pass everything ",
-                "responsible": {
-                    "name": "Sergio Rodriguez",
-                    "email": "sergio200035@gmail"
-                },
-                "status": "In Progress",
-                "dueDate": 999999999999
-            },
-        ]
-    };
+
+    constructor(props) {
+        super(props);
+        this.state = {open: false, tasks: props.tasks};
+        this.changeState = this.changeState.bind(this)
+    }
 
     handleDrawerOpen = () => {
         this.setState({open: true});
@@ -118,9 +98,27 @@ class PersistentDrawerLeft extends React.Component {
         this.setState({open: false});
     };
 
+    changeState = (element) => {
+        this.setState(element)
+    };
+
+    handleClose = () => {
+        this.setState({ anchorEl: null });
+    };
+
+    handleClick = event => {
+        this.setState({ anchorEl: event.currentTarget });
+    };
+
+    handleFilter = event => {
+        this.setState({ anchorEl: null });
+    };
+
     render() {
         const {classes, theme} = this.props;
         const {open} = this.state;
+        const { anchorEl } = this.state;
+        const openMenu = Boolean(anchorEl);
 
         return (
             <div className={classes.root}>
@@ -140,6 +138,28 @@ class PersistentDrawerLeft extends React.Component {
                         >
                             <MenuIcon/>
                         </IconButton>
+                        <div className="rigth">
+                            <IconButton
+
+                                color="inherit"
+                                aria-label="More"
+                                aria-owns={openMenu ? 'simple-menu' : undefined}
+                                aria-haspopup="true"
+                                className={classNames(classes.menuButton)}
+                                onClick={this.handleClick}
+                            >
+                                <MoreVert/>
+                            </IconButton>
+                            <Menu
+                                id="simple-menu"
+                                anchorEl={anchorEl}
+                                open= {openMenu}
+                                onClose={this.handleClose}
+                            >
+                                <MenuItem onClick={this.handleFilter}>Filter</MenuItem>
+
+                            </Menu>
+                        </div>
                     </Toolbar>
                 </AppBar>
                 <Drawer
@@ -161,10 +181,10 @@ class PersistentDrawerLeft extends React.Component {
                         <img src={userimage} alt="userimg" className="img2"/>
                         <div>
                             <br/>
-                            <Typography variant="h7">
+                            <Typography variant="h5">
                                 {this.props.info.name}
                             </Typography>
-                            <Typography variant="h8">
+                            <Typography variant="h6">
                                 {this.props.info.email}
                             </Typography>
                         </div>
@@ -185,13 +205,11 @@ class PersistentDrawerLeft extends React.Component {
                     })}
                 >
                     <div className={classes.drawerHeader}/>
-                    { this.state.tasks.map( task => {
-                        return(<CardTask info={task}/>);
+                    {this.state.tasks.map((task, id) => {
+                        return (<CardTask info={task} key={id}/>);
                     })}
                     <div className="rigth">
-                        <Fab color="primary" aria-label="Add">
-                            <AddIcon />
-                        </Fab>
+                        <FloatingActionButton icon={<AddIcon/>} toRoute={"/NewTask"}/>
                     </div>
                 </main>
             </div>
