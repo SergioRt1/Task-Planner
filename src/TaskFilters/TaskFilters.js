@@ -54,9 +54,8 @@ class TaskFilters extends Component {
                                 native
                                 value={this.state.status}
                                 onChange={event => this.setState({status: event.target.value})}
-
                             >
-                                <option value="" disabled selected={true} hidden/>
+                                <option value="" disabled hidden/>
                                 <option value={"Ready"}>Ready</option>
                                 <option value={"In Progress"}>In Progress</option>
                                 <option value={"Completed"}>Completed</option>

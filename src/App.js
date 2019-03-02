@@ -14,6 +14,16 @@ class App extends Component {
         super(props);
         localStorage.setItem('userDefault', "SergioRt");
         localStorage.setItem('passwordDefault', "12345");
+        this.state = {
+            tasks: tasksList
+        };
+        this.formNewTask = this.formNewTask.bind(this)
+    }
+
+    formNewTask(newTask) {
+        this.setState((state) => ({
+            tasks: [...state.tasks,newTask]
+        }));
     }
 
     render() {
@@ -23,8 +33,9 @@ class App extends Component {
                 {localStorage.getItem('page') === 'home' ?
                     <BrowserRouter>
                         <Switch>
-                            <Route exact path="/" render={() => <PersistentDrawerLeft info={inf} tasks={tasks}/>}/>
-                            <Route exact path="/NewTask" render={() => <NewTask/>}/>
+                            <Route exact path="/"
+                                   render={() => <PersistentDrawerLeft info={inf} tasks={this.state.tasks}/>}/>
+                            <Route exact path="/NewTask" render={() => <NewTask callback={this.formNewTask}/>}/>
                             <Route exact path="/UserProfile" render={() => <UserProfile/>}/>
                             <Route exact path="/TaskFilters" render={() => <TaskFilters/>}/>
                         </Switch>
@@ -44,7 +55,7 @@ const inf = {
     "email": "sergio200035@gmail.com"
 
 };
-const tasks = [
+const tasksList = [
     {
         "description": "Implementation",
         "responsible": {
