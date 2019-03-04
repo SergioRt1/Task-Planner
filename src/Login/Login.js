@@ -4,7 +4,7 @@ import TextField from '@material-ui/core/TextField';
 import Paper from '@material-ui/core/Paper';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Typography from '@material-ui/core/Typography';
-import Link from '@material-ui/core/Link';
+import {Link} from "react-router-dom";
 import brain from './../brain.jpg';
 import './Login.css';
 
@@ -17,15 +17,25 @@ export class Login extends React.Component {
     }
 
     handleSubmit(e) {
-        if (localStorage.getItem('userDefault') === this.state.username && localStorage.getItem('passwordDefault') === this.state.password){
+        e.preventDefault();
+        const users = JSON.parse(localStorage.getItem('users'));
+        let login = false;
+        for (const i in users) {
+            if (users[i].username === this.state.username && users[i].password === this.state.password) {
+                login = true;
+            }
+        }
+        if (login) {
             localStorage.setItem('page', "home");
-        }else alert("Wrong credentials")
-        this.setState({username: "", password: ""});
+            localStorage.setItem('lastUser', this.state.username);
+            this.props.callback(this.state.username);
+            this.props.reloadPage();
+        } else {
+            alert("Wrong credentials");
+            this.setState({username: "", password: ""});
+        }
     }
 
-    handleRedirect(e) {
-        localStorage.setItem('page', "newAccount");
-    }
 
     render() {
         return (
@@ -38,15 +48,17 @@ export class Login extends React.Component {
                         </Typography>
                         <img src={brain} alt="logo" className="img"/>
                         <form className="form" onSubmit={this.handleSubmit}>
-                            <TextField required label="Username" fullWidth onChange={event => this.setState({username:event.target.value})}/>
-                            <TextField required label="Password" type="password" fullWidth onChange={event => this.setState({password:event.target.value})}/>
+                            <TextField required label="Username" fullWidth
+                                       onChange={event => this.setState({username: event.target.value})}/>
+                            <TextField required label="Password" type="password" fullWidth
+                                       onChange={event => this.setState({password: event.target.value})}/>
                             <br/><br/>
-                            <Button type="submit" color="primary" variant="raised" fullWidth>
+                            <Button type="submit" color="primary" variant="contained" fullWidth>
                                 Login
                             </Button>
                         </form>
                         <br/>
-                        <Link href="/UserProfile" onClick={this.handleRedirect}>Create account</Link>
+                        <Link to={"/NewUser"} >Create account</Link>
                     </Paper>
                 </main>
             </React.Fragment>

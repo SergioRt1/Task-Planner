@@ -9,27 +9,29 @@ import InputLabel from "@material-ui/core/InputLabel";
 import Select from "@material-ui/core/Select";
 import {MuiPickersUtilsProvider, DatePicker} from 'material-ui-pickers';
 import DateFnsUtils from '@date-io/date-fns';
-import 'date-fns';
+import FormLabel from "@material-ui/core/FormLabel"
 
 class TaskFilters extends Component {
     constructor(props) {
         super(props);
-        this.state = {description: "", responsible: ""};
+        this.state = {dueDate: new Date(), name: "", email: "", status: ""};
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleClearInfo = this.handleClearInfo.bind(this);
     }
 
     handleSubmit(e) {
-        if (this.state.confirmPassword === this.state.password) {
+        //TODO Filter actions
+    }
 
-            this.setState({dueDate: "", responsible: "", status: "", confirmPassword: ""});
-        } else alert("The password and the confirmation do not make match")
+    handleClearInfo(){
+        this.setState({dueDate: new Date(), name: "", email: "", status: ""});
     }
 
     render() {
         return (
             <>
                 <Paper elevation={5} className="paper">
-                    <Typography variant="h2">Task filters</Typography>
+                    <Typography variant="h4">Task filters</Typography>
                     <br/><br/>
 
                     <form className="form" onSubmit={this.handleSubmit}>
@@ -38,14 +40,16 @@ class TaskFilters extends Component {
                                 margin="normal"
                                 label="Due Date"
                                 value={this.state.dueDate}
-                                onChange={event => this.setState({dueDate: event.target.value})}
-
+                                onChange={date => this.setState({dueDate: date})}
                             />
                         </MuiPickersUtilsProvider>
-
-                        <TextField label="Responsible" fullWidth
-                                   onChange={event => this.setState({responsible: event.target.value})}/>
-
+                        <br/><br/>
+                        <FormLabel component="legend">Responsible</FormLabel>
+                        <TextField value={this.state.name} label="Name"
+                                   onChange={event => this.setState({name: event.target.value})}/>
+                        <TextField value={this.state.email} label="Email"
+                                   onChange={event => this.setState({email: event.target.value})}/>
+                        <br/><br/>
                         <FormControl variant="outlined" fullWidth>
                             <InputLabel htmlFor="outlined-age-native-simple">
                                 Status
@@ -64,11 +68,11 @@ class TaskFilters extends Component {
 
 
                         <br/><br/>
-                        <Button type="submit" color="primary" variant="raised" fullWidth>
+                        <Button type="submit" color="primary" variant="contained" fullWidth>
                             Apply
                         </Button>
                         <br/><br/>
-                        <Button type="submit" color="primary" variant="raised" fullWidth>
+                        <Button  color="primary" variant="contained" fullWidth onClick={this.handleClearInfo}>
                             Clear All
                         </Button>
                     </form>

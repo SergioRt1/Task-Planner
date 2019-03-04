@@ -4,7 +4,7 @@ import {Login} from './Login/Login';
 import {BrowserRouter, Route, Switch} from "react-router-dom";
 import PersistentDrawerLeft from "./Drawer/Drawer";
 import NewTask from "./NewTask/NewTask";
-import UserProfile from "./UserProfile/UserProfile";
+import NewUser from "./NewUser/NewUser";
 import TaskFilters from "./TaskFilters/TaskFilters";
 
 
@@ -12,49 +12,60 @@ class App extends Component {
 
     constructor(props) {
         super(props);
-        localStorage.setItem('userDefault', "SergioRt");
-        localStorage.setItem('passwordDefault', "12345");
+        const lastUsername = localStorage.getItem('lastUser');
         this.state = {
-            tasks: tasksList
+            tasks: tasksList,
+            info: JSON.parse(localStorage.getItem(lastUsername)),
+            page: localStorage.getItem('page')
         };
-        this.formNewTask = this.formNewTask.bind(this)
+        this.formNewTask = this.formNewTask.bind(this);
+        this.reloadPage = this.reloadPage.bind(this);
+        this.getUsername = this.getUsername.bind(this)
+    }
+
+    getUsername(username) {
+        const inf = JSON.parse(localStorage.getItem(username));
+        this.setState({info: inf})
     }
 
     formNewTask(newTask) {
         this.setState((state) => ({
-            tasks: [...state.tasks,newTask]
+            tasks: [...state.tasks, newTask]
         }));
+    }
+
+    reloadPage() {
+        this.setState({page: localStorage.getItem('page')})
     }
 
     render() {
         return (
-
             <div>
-                {localStorage.getItem('page') === 'home' ?
+                {this.state.page === 'home' ?
                     <BrowserRouter>
                         <Switch>
                             <Route exact path="/"
-                                   render={() => <PersistentDrawerLeft info={inf} tasks={this.state.tasks}/>}/>
+                                   render={() => <PersistentDrawerLeft info={this.state.info}
+                                                                       tasks={this.state.tasks}
+                                                                       reloadPage={this.state.reloadPage}/>}/>
                             <Route exact path="/NewTask" render={() => <NewTask callback={this.formNewTask}/>}/>
-                            <Route exact path="/UserProfile" render={() => <UserProfile/>}/>
                             <Route exact path="/TaskFilters" render={() => <TaskFilters/>}/>
                         </Switch>
                     </BrowserRouter>
-                    : <Login/>
+                    : <BrowserRouter>
+                        <Switch>
+                            <Route exact path="/" render={() => <Login callback={this.getUsername} reloadPage={this.reloadPage}/>}/>
+                            <Route exact path="/NewUser" render={() => <NewUser/>}/>
+                        </Switch>
+                    </BrowserRouter>
                 }
             </div>
-
         );
     }
 }
 
 export default App;
 
-const inf = {
-    "name": "Sergio Rodriguez",
-    "email": "sergio200035@gmail.com"
-
-};
 const tasksList = [
     {
         "description": "Implementation",

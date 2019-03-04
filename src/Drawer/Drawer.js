@@ -15,7 +15,7 @@ import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import ExitToApp from '@material-ui/icons/ExitToApp';
 import Edit from '@material-ui/icons/Edit';
-import Link from '@material-ui/core/Link';
+import {Link, Redirect} from "react-router-dom";
 import userimage from './../user.svg'
 import {CardTask} from "../CardTask/CardTask";
 import FloatingActionButton from "../FloatingActionButton";
@@ -111,7 +111,12 @@ class PersistentDrawerLeft extends React.Component {
     };
 
     handleFilter = event => {
-        this.setState({ anchorEl: null });
+        this.setState({ anchorEl: null, doRedirectFilter: true});
+    };
+
+    handleLogout = () => {
+        localStorage.setItem('page', "login");
+        this.props.reloadPage()
     };
 
     render() {
@@ -157,6 +162,7 @@ class PersistentDrawerLeft extends React.Component {
                                 onClose={this.handleClose}
                             >
                                 <MenuItem onClick={this.handleFilter}>Filter</MenuItem>
+                                {this.state.doRedirectFilter && <Redirect to={"/TaskFilters"}/>}
 
                             </Menu>
                         </div>
@@ -196,7 +202,7 @@ class PersistentDrawerLeft extends React.Component {
                     <Divider/>
                     <div className="bottom">
                         <ExitToApp/>
-                        <Link href="#">Logout</Link>
+                        <Link to={"/"} onClick={this.handleLogout}>Logout</Link>
                     </div>
                 </Drawer>
                 <main

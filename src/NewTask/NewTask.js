@@ -4,7 +4,7 @@ import TextField from "@material-ui/core/TextField";
 import Paper from "@material-ui/core/Paper";
 import Fab from "@material-ui/core/Fab"
 import CheckCircle from '@material-ui/icons/CheckCircle';
-import {Link} from "react-router-dom";
+import {Redirect} from "react-router-dom";
 import FormControl from "@material-ui/core/FormControl";
 import InputLabel from "@material-ui/core/InputLabel";
 import Select from "@material-ui/core/Select";
@@ -16,7 +16,7 @@ class NewTask extends Component {
 
     constructor(props) {
         super(props);
-        this.state = {description: "", name: "", email: "", status: "", dueDate: new Date()};
+        this.state = {description: "", name: "", email: "", status: "", dueDate: new Date(), doRedirect: false};
         this.handleSubmit = this.handleSubmit.bind(this)
     }
 
@@ -32,14 +32,14 @@ class NewTask extends Component {
             "dueDate": this.state.dueDate
         };
         this.props.callback(data);
-        this.setState({description: "", name: "", email: "", status: ""})
+        this.setState({description: "", name: "", email: "", status: "", dueDate: new Date(), doRedirect:true})
     }
 
     render() {
 
         return (
             <Paper elevation={5} className="paper">
-                <Typography variant="h2">New Task</Typography>
+                <Typography variant="h4">New Task</Typography>
                 <br/>
                 <form className="form" onSubmit={this.handleSubmit}>
                     <TextField required label="Description" fullWidth
@@ -79,11 +79,11 @@ class NewTask extends Component {
                     </MuiPickersUtilsProvider>
 
                     <div className="rigth">
-                        <Fab type="submit" color="primary" variant="round" onClick={this.handleSubmit} component={Link}
-                             to={"/"}>
+                        <Fab type="submit" color="primary" variant="round">
                             <CheckCircle/>
                         </Fab>
                     </div>
+                    {this.state.doRedirect && <Redirect to={"/"}/>}
                 </form>
             </Paper>
         );
