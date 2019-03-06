@@ -9,23 +9,76 @@ import InputLabel from "@material-ui/core/InputLabel";
 import Select from "@material-ui/core/Select";
 import {MuiPickersUtilsProvider, DatePicker} from 'material-ui-pickers';
 import DateFnsUtils from '@date-io/date-fns';
+import 'date-fns';
 import FormLabel from "@material-ui/core/FormLabel"
+import Modal from "@material-ui/core/Modal";
+import {CardTask} from "../CardTask/CardTask";
 
 class TaskFilters extends Component {
     constructor(props) {
         super(props);
-        this.state = {dueDate: new Date(), name: "", email: "", status: ""};
+        this.state = {
+            dueDate: null,
+            name: "",
+            email: "",
+            status: "",
+            tasks: this.props.tasks,
+            open: false
+        };
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleClearInfo = this.handleClearInfo.bind(this);
     }
 
-    handleSubmit(e) {
-        //TODO Filter actions
+    dateComp(date1, date2) {
+        return date1.getDate() === date2.getDate() && date1.getFullYear() === date2.getFullYear() && date1.getMonth() === date2.getMonth();
     }
 
-    handleClearInfo(){
-        this.setState({dueDate: new Date(), name: "", email: "", status: ""});
+    handleSubmit(e) {
+        e.preventDefault();
+        let ans = this.props.tasks.slice();
+        for (const k in ans) {
+            if (this.state.dueDate !== null) {
+                const date1 = new Date(ans[k].dueDate);
+                const date2 = this.state.dueDate;
+                if (!this.dateComp(date1, date2)) {
+                    ans[k] = null;
+                    continue;
+                }
+            }
+            if (this.state.name !== "") {
+                if (!ans[k].responsible.name.startsWith(this.state.name)){
+                    ans[k] = null;
+                    continue;
+                }
+            }
+            if (this.state.email !== "") {
+                if (!ans[k].responsible.email.startsWith(this.state.email)){
+                    ans[k] = null;
+                    continue;
+                }
+            }
+            if (this.state.status !== "") {
+                if (this.state.status !== ans[k].status){
+                    ans[k] = null;
+                }
+            }
+        }
+        ans = ans.filter(task => task !== null);
+        this.setState({tasks: ans});
+        this.handleOpen()
     }
+
+    handleClearInfo() {
+        this.setState({dueDate: null, name: "", email: "", status: ""});
+    }
+
+    handleOpen = () => {
+        this.setState({open: true});
+    };
+
+    handleClose = () => {
+        this.setState({open: false});
+    };
 
     render() {
         return (
@@ -39,6 +92,7 @@ class TaskFilters extends Component {
                             <DatePicker
                                 margin="normal"
                                 label="Due Date"
+                                clearable
                                 value={this.state.dueDate}
                                 onChange={date => this.setState({dueDate: date})}
                             />
@@ -65,16 +119,26 @@ class TaskFilters extends Component {
                                 <option value={"Completed"}>Completed</option>
                             </Select>
                         </FormControl>
-
-
                         <br/><br/>
                         <Button type="submit" color="primary" variant="contained" fullWidth>
                             Apply
                         </Button>
                         <br/><br/>
-                        <Button  color="primary" variant="contained" fullWidth onClick={this.handleClearInfo}>
+                        <Button color="primary" variant="contained" fullWidth onClick={this.handleClearInfo}>
                             Clear All
                         </Button>
+                        <Modal
+                            aria-labelledby="simple-modal-title"
+                            aria-describedby="simple-modal-description"
+                            open={this.state.open}
+                            onClose={this.handleClose}
+                        >
+                            <div>
+                                {this.state.tasks.map((task, id) => {
+                                    return (<CardTask info={task} key={id}/>);
+                                })}
+                            </div>
+                        </Modal>
                     </form>
                 </Paper>
             </>

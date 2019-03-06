@@ -1,4 +1,4 @@
-import React, {Component, useState} from 'react';
+import React, {Component} from 'react';
 import Typography from "@material-ui/core/Typography";
 import TextField from "@material-ui/core/TextField";
 import Paper from "@material-ui/core/Paper";
@@ -11,6 +11,7 @@ import Select from "@material-ui/core/Select";
 import {MuiPickersUtilsProvider, DatePicker} from 'material-ui-pickers';
 import DateFnsUtils from '@date-io/date-fns';
 import FormLabel from "@material-ui/core/FormLabel";
+import 'date-fns';
 
 class NewTask extends Component {
 

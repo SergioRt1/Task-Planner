@@ -49,7 +49,7 @@ class App extends Component {
                                                                        tasks={this.state.tasks}
                                                                        reloadPage={this.state.reloadPage}/>}/>
                             <Route exact path="/NewTask" render={() => <NewTask callback={this.formNewTask}/>}/>
-                            <Route exact path="/TaskFilters" render={() => <TaskFilters/>}/>
+                            <Route exact path="/TaskFilters" render={() => <TaskFilters tasks={this.state.tasks}/>}/>
                         </Switch>
                     </BrowserRouter>
                     : <BrowserRouter>

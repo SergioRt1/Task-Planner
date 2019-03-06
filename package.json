@@ -11,7 +11,8 @@
     "react": "latest",
     "react-dom": "latest",
     "react-router-dom": "latest",
-    "react-scripts": "latest"
+    "react-scripts": "latest",
+    "date-fns": "^2.0.0-alpha.27"
   },
   "scripts": {
     "start": "react-scripts start",
