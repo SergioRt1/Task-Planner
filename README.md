@@ -2,10 +2,17 @@
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-### By: Sergio Andrés Rodríguez Torres
+# Using
+ * React
+ * JavaScript
+ * npm
+
+# Author
+
+[Sergio Andrés Rodríguez Torres](https://github.com/SergioRt1)
 
 ## Credentials
- * Username: SergioRt
- * Password: 12345
+
+ You need to create a new user to get access.
  
-### [Demo Heroku](https://lab-react-tasker.herokuapp.com/)
+### [Demo Firebase](https://taks-planner-app.firebaseapp.com)
