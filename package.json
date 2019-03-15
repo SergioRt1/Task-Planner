@@ -6,13 +6,14 @@
     "@date-io/date-fns": "^1.1.0",
     "@material-ui/core": "latest",
     "@material-ui/icons": "latest",
+    "date-fns": "^2.0.0-alpha.27",
+    "firebase-tools": "^6.4.0",
     "material-ui-pickers": "latest",
     "prop-types": "latest",
     "react": "latest",
     "react-dom": "latest",
     "react-router-dom": "latest",
-    "react-scripts": "latest",
-    "date-fns": "^2.0.0-alpha.27"
+    "react-scripts": "latest"
   },
   "scripts": {
     "start": "react-scripts start",
