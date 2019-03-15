@@ -13,6 +13,9 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 ## Credentials
 
- You need to create a new user to get access.
+ * Username: SergioRt
+ * Password: 1234
+ 
+### You may need to refresh the page because heroku server is very slow and need to wake up.
  
 ### [Demo Firebase](https://taks-planner-app.firebaseapp.com)
