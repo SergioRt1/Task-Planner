@@ -4,7 +4,6 @@ import TextField from "@material-ui/core/TextField";
 import Paper from "@material-ui/core/Paper";
 import Fab from "@material-ui/core/Fab"
 import CheckCircle from '@material-ui/icons/CheckCircle';
-import {Redirect} from "react-router-dom";
 import FormControl from "@material-ui/core/FormControl";
 import InputLabel from "@material-ui/core/InputLabel";
 import Select from "@material-ui/core/Select";
@@ -17,23 +16,25 @@ class NewTask extends Component {
 
     constructor(props) {
         super(props);
-        this.state = {description: "", name: "", email: "", status: "", dueDate: new Date(), doRedirect: false};
+        this.state = {description: "", name: "", email: "", status: "", dueDate: new Date()};
         this.handleSubmit = this.handleSubmit.bind(this)
     }
 
 
     handleSubmit(event) {
+        event.preventDefault();
         const data = {
             "description": this.state.description,
             "responsible": {
                 "name": this.state.name,
                 "email": this.state.email
             },
-            "status": this.state.status,
+            "state": this.state.status,
             "dueDate": this.state.dueDate
         };
         this.props.callback(data);
-        this.setState({description: "", name: "", email: "", status: "", dueDate: new Date(), doRedirect:true})
+        this.setState({description: "", name: "", email: "", status: "", dueDate: new Date()});
+
     }
 
     render() {
@@ -44,12 +45,15 @@ class NewTask extends Component {
                 <br/>
                 <form className="form" onSubmit={this.handleSubmit}>
                     <TextField required label="Description" fullWidth
+                               value={this.state.description}
                                onChange={event => this.setState({description: event.target.value})}/>
                     <br/><br/>
                     <FormLabel component="legend">Responsible</FormLabel>
                     <TextField required label="Name"
+                               value={this.state.name}
                                onChange={event => this.setState({name: event.target.value})}/>
                     <TextField required label="Email"
+                               value={this.state.email}
                                onChange={event => this.setState({email: event.target.value})}/>
                     <br/><br/>
                     <FormControl variant="outlined" fullWidth>
@@ -64,7 +68,7 @@ class NewTask extends Component {
                         >
                             <option value="" disabled hidden/>
                             <option value={"Ready"}>Ready</option>
-                            <option value={"In Progress"}>In Progress</option>
+                            <option value={"In_Progress"}>In_Progress</option>
                             <option value={"Completed"}>Completed</option>
                         </Select>
                     </FormControl>
@@ -79,12 +83,11 @@ class NewTask extends Component {
                         />
                     </MuiPickersUtilsProvider>
 
-                    <div className="rigth">
+                    <div className="right">
                         <Fab type="submit" color="primary" variant="round">
                             <CheckCircle/>
                         </Fab>
                     </div>
-                    {this.state.doRedirect && <Redirect to={"/"}/>}
                 </form>
             </Paper>
         );

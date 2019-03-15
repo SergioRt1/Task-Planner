@@ -5,7 +5,6 @@ import {BrowserRouter, Route, Switch} from "react-router-dom";
 import PersistentDrawerLeft from "./Drawer/Drawer";
 import NewTask from "./NewTask/NewTask";
 import NewUser from "./NewUser/NewUser";
-import TaskFilters from "./TaskFilters/TaskFilters";
 
 
 class App extends Component {
@@ -14,24 +13,48 @@ class App extends Component {
         super(props);
         const lastUsername = localStorage.getItem('lastUser');
         this.state = {
-            tasks: tasksList,
+            tasks: [],
+            users: [],
             info: JSON.parse(localStorage.getItem(lastUsername)),
             page: localStorage.getItem('page')
         };
-        this.formNewTask = this.formNewTask.bind(this);
+        // this.URL = "http://localhost:8080";
+        this.URL = "https://api-task-planner.herokuapp.com";
         this.reloadPage = this.reloadPage.bind(this);
         this.getUsername = this.getUsername.bind(this)
     }
 
-    getUsername(username) {
-        const inf = JSON.parse(localStorage.getItem(username));
-        this.setState({info: inf})
+    componentDidMount() {
+
+        fetch(this.URL + '/tasks')
+            .then(response => response.json())
+            .then(data => {
+                let tasks = [];
+                data.forEach(function (task) {
+                    tasks.push(task)
+                });
+                localStorage.setItem('tasks',JSON.stringify(tasks));
+                this.setState({tasks: tasks});
+            });
+        fetch(this.URL + '/users')
+            .then(response => response.json())
+            .then(data => {
+                let users = [];
+                data.forEach(function (user) {
+                    users.push(user)
+                });
+                localStorage.setItem('users',JSON.stringify(users));
+                this.setState({users: users});
+            });
     }
 
-    formNewTask(newTask) {
-        this.setState((state) => ({
-            tasks: [...state.tasks, newTask]
-        }));
+    getUsername(username) {
+        fetch(this.URL + '/users/' + username)
+            .then(response => response.json())
+            .then(inf => {
+                localStorage.setItem(username,JSON.stringify(inf));
+                this.setState({info: inf})
+            });
     }
 
     reloadPage() {
@@ -49,12 +72,13 @@ class App extends Component {
                                                                        tasks={this.state.tasks}
                                                                        reloadPage={this.state.reloadPage}/>}/>
                             <Route exact path="/NewTask" render={() => <NewTask callback={this.formNewTask}/>}/>
-                            <Route exact path="/TaskFilters" render={() => <TaskFilters tasks={this.state.tasks}/>}/>
                         </Switch>
                     </BrowserRouter>
                     : <BrowserRouter>
                         <Switch>
-                            <Route exact path="/" render={() => <Login callback={this.getUsername} reloadPage={this.reloadPage}/>}/>
+                            <Route exact path="/"
+                                   render={() => <Login callback={this.getUsername} reloadPage={this.reloadPage}
+                                                        users={this.state.users}/>}/>
                             <Route exact path="/NewUser" render={() => <NewUser/>}/>
                         </Switch>
                     </BrowserRouter>

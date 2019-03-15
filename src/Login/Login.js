@@ -18,11 +18,12 @@ export class Login extends React.Component {
 
     handleSubmit(e) {
         e.preventDefault();
-        const users = JSON.parse(localStorage.getItem('users'));
+        const users = this.props.users;
         let login = false;
         for (const i in users) {
             if (users[i].username === this.state.username && users[i].password === this.state.password) {
                 login = true;
+                break;
             }
         }
         if (login) {

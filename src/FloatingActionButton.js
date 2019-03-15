@@ -2,13 +2,12 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {withStyles} from '@material-ui/core/styles';
 import Fab from '@material-ui/core/Fab';
-import {Link} from "react-router-dom"
-
 
 const styles = theme => ({
     fab: {
-        margin: theme.spacing.unit,
-        marginRight: theme.spacing.unit
+        right: theme.spacing.unit * 2,
+        bottom: theme.spacing.unit * 2,
+        position: 'fixed'
     },
     extendedIcon: {
         marginRight: theme.spacing.unit,
@@ -19,7 +18,7 @@ const styles = theme => ({
 function FloatingActionButton(props) {
     const {classes} = props;
     return (
-            <Fab color="primary" aria-label="Add" className={classes.fab} component={Link} to={props.toRoute}>
+            <Fab color="primary" aria-label="Add" className={classes.fab} onClick={props.callback}>
                 {props.icon}
             </Fab>
     );

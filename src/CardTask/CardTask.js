@@ -37,13 +37,13 @@ export class CardTask extends React.Component {
                                     </Typography>
                                 </div>
                                 <div >
-                                    {this.props.info.status === "Completed" ? <CheckCircle/> : <div/>}
-                                    {this.props.info.status === "Ready" ? <CheckCircleOutline/> : <div/>}
-                                    {this.props.info.status === "In Progress" ? <DonutLarge/> : <div/>}
+                                    {this.props.info.state === "Completed" ? <CheckCircle/> : <div/>}
+                                    {this.props.info.state === "Ready" ? <CheckCircleOutline/> : <div/>}
+                                    {this.props.info.state === "In_Progress" ? <DonutLarge/> : <div/>}
                                 </div>
                             </div>
                             <Typography variant="h5">
-                                {this.props.info.status} - {new Date(this.props.info.dueDate).toDateString()}
+                                {this.props.info.state} - {new Date(this.props.info.dueDate).toDateString()}
                             </Typography>
 
                             <Typography variant="h5">
