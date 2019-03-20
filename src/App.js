@@ -3,7 +3,6 @@ import './App.css';
 import {Login} from './Login/Login';
 import {BrowserRouter, Route, Switch} from "react-router-dom";
 import PersistentDrawerLeft from "./Drawer/Drawer";
-import NewTask from "./NewTask/NewTask";
 import NewUser from "./NewUser/NewUser";
 
 
@@ -12,8 +11,10 @@ class App extends Component {
     constructor(props) {
         super(props);
         const lastUsername = localStorage.getItem('username');
+        let t = JSON.parse(localStorage.getItem("tasks"));
+        if(JSON.parse(localStorage.getItem("tasks")) === null) t = [];
         this.state = {
-            tasks: JSON.parse(localStorage.getItem("tasks")),
+            tasks: t,
             info: JSON.parse(localStorage.getItem(lastUsername)),
             page: localStorage.getItem('page')
         };

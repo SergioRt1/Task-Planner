@@ -20,7 +20,7 @@ export class Login extends React.Component {
     handleSubmit(e) {
         e.preventDefault();
         let login = false;
-        axios.post("http://localhost:8080/user/login",
+        axios.post("https://api-task-planner.herokuapp.com/user/login",
             {
                 username: this.state.username,
                 password: this.state.password

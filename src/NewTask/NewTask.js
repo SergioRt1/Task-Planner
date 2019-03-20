@@ -22,7 +22,7 @@ class NewTask extends Component {
         this.tokenAxios = axios.create({
             timeout: 1000,
             headers: {'Authorization': 'Bearer ' + localStorage.getItem("accessToken")},
-            baseURL: "http://localhost:8080/api"
+            baseURL: "https://api-task-planner.herokuapp.com/api"
         });
     }
 
