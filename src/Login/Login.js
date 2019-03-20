@@ -7,6 +7,7 @@ import Typography from '@material-ui/core/Typography';
 import {Link} from "react-router-dom";
 import brain from './../brain.jpg';
 import './Login.css';
+import axios from "axios";
 
 export class Login extends React.Component {
 
@@ -18,23 +19,21 @@ export class Login extends React.Component {
 
     handleSubmit(e) {
         e.preventDefault();
-        const users = this.props.users;
         let login = false;
-        for (const i in users) {
-            if (users[i].username === this.state.username && users[i].password === this.state.password) {
-                login = true;
-                break;
-            }
-        }
-        if (login) {
-            localStorage.setItem('page', "home");
-            localStorage.setItem('lastUser', this.state.username);
-            this.props.callback(this.state.username);
-            this.props.reloadPage();
-        } else {
+        axios.post("http://localhost:8080/user/login",
+            {
+                username: this.state.username,
+                password: this.state.password
+            }).then((response) => {
+                localStorage.setItem("accessToken", response.data.accessToken);
+                localStorage.setItem('page', "home");
+                localStorage.setItem('username', this.state.username);
+                this.props.reloadPage();
+        }).catch(function (error) {
+            console.log(error);
             alert("Wrong credentials");
             this.setState({username: "", password: ""});
-        }
+        });
     }
 
 
@@ -59,7 +58,7 @@ export class Login extends React.Component {
                             </Button>
                         </form>
                         <br/>
-                        <Link to={"/NewUser"} >Create account</Link>
+                        <Link to={"/NewUser"}>Create account</Link>
                     </Paper>
                 </main>
             </React.Fragment>

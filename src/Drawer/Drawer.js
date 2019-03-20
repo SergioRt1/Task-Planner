@@ -23,6 +23,7 @@ import FilterIcon from '@material-ui/icons/FilterList';
 import Modal from "@material-ui/core/Modal";
 import TaskFilters from "../TaskFilters/TaskFilters";
 import NewTask from "../NewTask/NewTask";
+import axios from "axios";
 
 const drawerWidth = 320;
 
@@ -97,9 +98,34 @@ class PersistentDrawerLeft extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = {open: false, tasks: props.tasks, openModal: false, openModalNew: false};
+        this.state = {open: false, tasks: props.tasks, openModal: false, openModalNew: false, userInfo: {name:"",email:""}};
         this.changeState = this.changeState.bind(this);
-        this.formNewTask = this.formNewTask.bind(this)
+        this.formNewTask = this.formNewTask.bind(this);
+        this.tokenAxios = axios.create({
+            timeout: 1000,
+            headers: {'Authorization': 'Bearer ' + localStorage.getItem("accessToken")},
+            baseURL: "http://localhost:8080/api"
+        });
+        // this.URL = "https://api-task-planner.herokuapp.com";
+    }
+
+    componentDidMount() {
+        const username = localStorage.getItem('username');
+        this.tokenAxios.get('/user/' + username)
+            .then(response => {
+                localStorage.setItem(username, JSON.stringify(response.data));
+                this.setState({userInfo: response.data});
+            });
+        this.tokenAxios.get('/tasks/byUser/'+username)
+            .then(response => {
+                let tasks = [];
+                response.data.forEach(function (task) {
+                    tasks.push(task)
+                });
+                localStorage.setItem('tasks', JSON.stringify(tasks));
+                this.setState({tasks: tasks});
+            });
+
     }
 
     handleDrawerOpen = () => {
@@ -115,6 +141,7 @@ class PersistentDrawerLeft extends React.Component {
     };
 
     handleLogout = () => {
+        localStorage.clear();
         localStorage.setItem('page', "login");
         this.props.reloadPage()
     };
@@ -136,17 +163,18 @@ class PersistentDrawerLeft extends React.Component {
     };
 
     componentWillUpdate(nextProps, nextState, nextContext) {
-        if(nextProps.tasks !== this.props.tasks)
+        if (nextProps.tasks !== this.props.tasks)
             this.setState({tasks: nextProps.tasks})
     }
 
     formNewTask(newTask) {
         this.setState((state) => {
                 const newTasks = [...state.tasks, newTask];
-                localStorage.setItem('tasks',JSON.stringify(newTasks));
+                localStorage.setItem('tasks', JSON.stringify(newTasks));
                 return {tasks: newTasks}
             }
         );
+        this.handleModalNewClose()
     }
 
     render() {
@@ -177,14 +205,14 @@ class PersistentDrawerLeft extends React.Component {
                                 <FilterIcon/>
                             </IconButton>
                         </div>
-                            <Modal
-                                aria-labelledby="simple-modal-title"
-                                aria-describedby="simple-modal-description"
-                                open={this.state.openModal}
-                                onClose={this.handleModalClose}
-                            >
-                                <TaskFilters tasks={this.state.tasks}/>
-                            </Modal>
+                        <Modal
+                            aria-labelledby="simple-modal-title"
+                            aria-describedby="simple-modal-description"
+                            open={this.state.openModal}
+                            onClose={this.handleModalClose}
+                        >
+                            <TaskFilters tasks={this.state.tasks}/>
+                        </Modal>
                     </Toolbar>
                 </AppBar>
                 <Drawer
@@ -207,10 +235,10 @@ class PersistentDrawerLeft extends React.Component {
                         <div>
                             <br/>
                             <Typography variant="h5">
-                                {this.props.info.name}
+                                {this.state.userInfo.name}
                             </Typography>
                             <Typography variant="h6">
-                                {this.props.info.email}
+                                {this.state.userInfo.email}
                             </Typography>
                         </div>
                         <br/>

@@ -11,50 +11,16 @@ class App extends Component {
 
     constructor(props) {
         super(props);
-        const lastUsername = localStorage.getItem('lastUser');
+        const lastUsername = localStorage.getItem('username');
         this.state = {
-            tasks: [],
-            users: [],
+            tasks: JSON.parse(localStorage.getItem("tasks")),
             info: JSON.parse(localStorage.getItem(lastUsername)),
             page: localStorage.getItem('page')
         };
-        // this.URL = "http://localhost:8080";
-        this.URL = "https://api-task-planner.herokuapp.com";
         this.reloadPage = this.reloadPage.bind(this);
-        this.getUsername = this.getUsername.bind(this)
     }
 
     componentDidMount() {
-
-        fetch(this.URL + '/tasks')
-            .then(response => response.json())
-            .then(data => {
-                let tasks = [];
-                data.forEach(function (task) {
-                    tasks.push(task)
-                });
-                localStorage.setItem('tasks',JSON.stringify(tasks));
-                this.setState({tasks: tasks});
-            });
-        fetch(this.URL + '/users')
-            .then(response => response.json())
-            .then(data => {
-                let users = [];
-                data.forEach(function (user) {
-                    users.push(user)
-                });
-                localStorage.setItem('users',JSON.stringify(users));
-                this.setState({users: users});
-            });
-    }
-
-    getUsername(username) {
-        fetch(this.URL + '/users/' + username)
-            .then(response => response.json())
-            .then(inf => {
-                localStorage.setItem(username,JSON.stringify(inf));
-                this.setState({info: inf})
-            });
     }
 
     reloadPage() {
@@ -71,14 +37,12 @@ class App extends Component {
                                    render={() => <PersistentDrawerLeft info={this.state.info}
                                                                        tasks={this.state.tasks}
                                                                        reloadPage={this.state.reloadPage}/>}/>
-                            <Route exact path="/NewTask" render={() => <NewTask callback={this.formNewTask}/>}/>
                         </Switch>
                     </BrowserRouter>
                     : <BrowserRouter>
                         <Switch>
                             <Route exact path="/"
-                                   render={() => <Login callback={this.getUsername} reloadPage={this.reloadPage}
-                                                        users={this.state.users}/>}/>
+                                   render={() => <Login reloadPage={this.reloadPage}/>}/>
                             <Route exact path="/NewUser" render={() => <NewUser/>}/>
                         </Switch>
                     </BrowserRouter>

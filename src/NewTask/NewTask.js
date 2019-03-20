@@ -11,6 +11,7 @@ import {MuiPickersUtilsProvider, DatePicker} from 'material-ui-pickers';
 import DateFnsUtils from '@date-io/date-fns';
 import FormLabel from "@material-ui/core/FormLabel";
 import 'date-fns';
+import axios from "axios";
 
 class NewTask extends Component {
 
@@ -18,6 +19,11 @@ class NewTask extends Component {
         super(props);
         this.state = {description: "", name: "", email: "", status: "", dueDate: new Date()};
         this.handleSubmit = this.handleSubmit.bind(this)
+        this.tokenAxios = axios.create({
+            timeout: 1000,
+            headers: {'Authorization': 'Bearer ' + localStorage.getItem("accessToken")},
+            baseURL: "http://localhost:8080/api"
+        });
     }
 
 
@@ -30,8 +36,10 @@ class NewTask extends Component {
                 "email": this.state.email
             },
             "state": this.state.status,
-            "dueDate": this.state.dueDate
+            "dueDate": this.state.dueDate.getTime(),
+            "owner": localStorage.getItem('username')
         };
+        this.tokenAxios.post("/tasks",data);
         this.props.callback(data);
         this.setState({description: "", name: "", email: "", status: "", dueDate: new Date()});
 
