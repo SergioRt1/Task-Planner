@@ -7,19 +7,21 @@ import CheckCircle from '@material-ui/icons/CheckCircle';
 import CheckCircleOutline from '@material-ui/icons/CheckCircleOutline';
 import DonutLarge from '@material-ui/icons/DonutLarge';
 import './CardTask.css';
+import Delete from "@material-ui/icons/Delete";
+import IconButton from "@material-ui/core/IconButton";
+import {AxiosInstance} from "../AxiosInstance";
 
 export class CardTask extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = {username: "", password: ""};
-        this.handleSubmit = this.handleSubmit.bind(this);
+        this.delete = this.delete.bind(this);
     }
 
-    handleSubmit(e) {
-        if (localStorage.getItem('emailDefault') === this.state.email && localStorage.getItem('passwordDefault') === this.state.password)
-            localStorage.setItem('isLoggedIn', "true");
-        this.setState({email: "", password: ""});
+
+    delete() {
+        this.props.callback(this.props.info);
+        AxiosInstance.getInstance().delete("/tasks/"+this.props.info.id);
     }
 
 
@@ -36,11 +38,14 @@ export class CardTask extends React.Component {
                                         {this.props.info.description}
                                     </Typography>
                                 </div>
-                                <div >
+                                <div style={{display: "flex", justifyContent: "center", alignItems: "center"}}>
                                     {this.props.info.state === "Completed" ? <CheckCircle/> : <div/>}
                                     {this.props.info.state === "Ready" ? <CheckCircleOutline/> : <div/>}
                                     {this.props.info.state === "In_Progress" ? <DonutLarge/> : <div/>}
                                 </div>
+                                <IconButton onClick={this.delete}>
+                                    <Delete/>
+                                </IconButton>
                             </div>
                             <Typography variant="h5">
                                 {this.props.info.state} - {new Date(this.props.info.dueDate).toDateString()}

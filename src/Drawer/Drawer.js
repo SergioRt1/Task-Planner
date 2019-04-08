@@ -14,8 +14,6 @@ import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import ExitToApp from '@material-ui/icons/ExitToApp';
 import Edit from '@material-ui/icons/Edit';
-import {Link} from "react-router-dom";
-import userimage from './../user.svg'
 import {CardTask} from "../CardTask/CardTask";
 import FloatingActionButton from "../FloatingActionButton";
 import AddIcon from '@material-ui/icons/Add';
@@ -23,13 +21,27 @@ import FilterIcon from '@material-ui/icons/FilterList';
 import Modal from "@material-ui/core/Modal";
 import TaskFilters from "../TaskFilters/TaskFilters";
 import NewTask from "../NewTask/NewTask";
-import axios from "axios";
+import List from "@material-ui/core/List";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemAvatar from "@material-ui/core/ListItemAvatar";
+import ListItemText from "@material-ui/core/ListItemText";
+import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
+import Avatar from "@material-ui/core/Avatar";
+import ListItemIcon from "@material-ui/core/ListItemIcon";
+import MenuList from "@material-ui/core/MenuList";
+import {AxiosInstance} from "../AxiosInstance";
+import EditUser from "../EditUser/EditUser";
 
-const drawerWidth = 320;
+const drawerWidth = 256;
 
 const styles = theme => ({
     root: {
         display: 'flex',
+        minHeight: '100vh',
+    },
+    avatarBox: {
+        width: '100%',
+
     },
     appBar: {
         transition: theme.transitions.create(['margin', 'width'], {
@@ -58,6 +70,7 @@ const styles = theme => ({
     },
     drawerPaper: {
         width: drawerWidth,
+        backgroundColor: theme.palette.background.default
     },
     drawerHeader: {
         display: 'flex',
@@ -68,7 +81,7 @@ const styles = theme => ({
     },
     content: {
         flexGrow: 1,
-        padding: theme.spacing.unit * 3,
+        padding: theme.spacing.unit * 2,
         transition: theme.transitions.create('margin', {
             easing: theme.transitions.easing.sharp,
             duration: theme.transitions.duration.leavingScreen,
@@ -98,25 +111,20 @@ class PersistentDrawerLeft extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = {open: false, tasks: props.tasks, openModal: false, openModalNew: false, userInfo: {name:"",email:""}};
+        this.state = {open: false, tasks: [], openModal: false, openModalNew: false, userInfo: {name:"",email:""},openModalUser: false};
         this.changeState = this.changeState.bind(this);
         this.formNewTask = this.formNewTask.bind(this);
-        this.tokenAxios = axios.create({
-            timeout: 1000,
-            headers: {'Authorization': 'Bearer ' + localStorage.getItem("accessToken")},
-            baseURL: "https://api-task-planner.herokuapp.com/api"
-        });
-        // this.URL = "https://api-task-planner.herokuapp.com";
+        this.updateUserInfo = this.updateUserInfo.bind(this);
+        this.removeTask = this.removeTask.bind(this);
     }
 
     componentDidMount() {
         const username = localStorage.getItem('username');
-        this.tokenAxios.get('/user/' + username)
+        AxiosInstance.getInstance().get('/user/' + username)
             .then(response => {
-                localStorage.setItem(username, JSON.stringify(response.data));
                 this.setState({userInfo: response.data});
             });
-        this.tokenAxios.get('/tasks/byUser/'+username)
+        AxiosInstance.getInstance().get('/tasks/byUser/'+username)
             .then(response => {
                 let tasks = [];
                 response.data.forEach(function (task) {
@@ -154,6 +162,14 @@ class PersistentDrawerLeft extends React.Component {
         this.setState({openModalNew: false});
     };
 
+    handleModalUserOpen = () => {
+        this.setState({openModalUser: true});
+    };
+
+    handleModalUserClose = () => {
+        this.setState({openModalUser: false});
+    };
+
     handleModalOpen = () => {
         this.setState({openModal: true});
     };
@@ -175,6 +191,15 @@ class PersistentDrawerLeft extends React.Component {
             }
         );
         this.handleModalNewClose()
+    }
+
+    updateUserInfo(userInfo) {
+        this.setState({userInfo: userInfo});
+    }
+
+    removeTask(task){
+        let tasks = this.state.tasks.filter((t)=>{return task.id !== t.id});
+        this.setState({tasks:tasks})
     }
 
     render() {
@@ -199,6 +224,9 @@ class PersistentDrawerLeft extends React.Component {
                         >
                             <MenuIcon/>
                         </IconButton>
+                        <Typography variant="h6" color="inherit" >
+                            Task planner
+                        </Typography>
                         <div className={classes.grow}/>
                         <div className={classes.sectionDesktop}>
                             <IconButton onClick={this.handleModalOpen} color="inherit">
@@ -230,26 +258,53 @@ class PersistentDrawerLeft extends React.Component {
                         </IconButton>
                     </div>
                     <Divider/>
-                    <div className="grid">
-                        <img src={userimage} alt="userimg" className="img2"/>
-                        <div>
-                            <br/>
-                            <Typography variant="h5">
-                                {this.state.userInfo.name}
-                            </Typography>
-                            <Typography variant="h6">
-                                {this.state.userInfo.email}
-                            </Typography>
-                        </div>
-                        <br/>
-                        <div className="right">
-                            <Edit/>
-                        </div>
-                    </div>
+                    <List className={classes.avatarBox}>
+                        <ListItem>
+                            <ListItemAvatar style={{
+                                left: -8,
+                            }}>
+                                <Avatar>{this.state.userInfo.name.charAt(0).toUpperCase()}</Avatar>
+                            </ListItemAvatar>
+
+                            <ListItemText
+
+                                primary={this.state.userInfo.name}
+
+                                secondary={
+                                    <Typography color="textSecondary" noWrap>
+                                        {this.state.userInfo.email}
+                                    </Typography>}
+                            />
+                            <ListItemSecondaryAction style={{
+                                position: 'absolute',
+                                left: 204,
+                                top: '50%',
+                                transform: 'translateY(-50%)',
+                            }}>
+                                <IconButton onClick={this.handleModalUserOpen}>
+                                    <Edit/>
+                                </IconButton>
+                                <Modal
+                                    aria-labelledby="simple-modal-title"
+                                    aria-describedby="simple-modal-description"
+                                    open={this.state.openModalUser}
+                                    onClose={this.handleModalUserClose}
+                                >
+                                    <EditUser callback={this.updateUserInfo} close={this.handleModalUserClose}/>
+                                </Modal>
+                            </ListItemSecondaryAction>
+                        </ListItem>
+                    </List>
                     <Divider/>
                     <div className="bottom">
-                        <ExitToApp/>
-                        <Link to={"/"} onClick={this.handleLogout}>Logout</Link>
+                        <MenuList>
+                            <ListItem button key="sign-out" onClick={this.handleLogout}>
+                                <ListItemIcon className={classes.item}>
+                                    <ExitToApp/>
+                                </ListItemIcon>
+                                <ListItemText primary="Logout"/>
+                            </ListItem>
+                        </MenuList>
                     </div>
                 </Drawer>
                 <main
@@ -259,7 +314,7 @@ class PersistentDrawerLeft extends React.Component {
                 >
                     <div className={classes.drawerHeader}/>
                     {this.state.tasks.map((task, id) => {
-                        return (<CardTask info={task} key={id}/>);
+                        return (<CardTask info={task} key={id} callback={this.removeTask}/>);
                     })}
                     <div className="right">
                         <FloatingActionButton icon={<AddIcon/>} callback={this.handleModalNewOpen}/>

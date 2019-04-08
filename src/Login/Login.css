@@ -19,12 +19,12 @@
 }
 
 .img {
-    with: 100px;
+    width: 100px;
     height: 100px;
     margin: 10px;
 }
 .img2 {
-    with: 50px;
+    width: 50px;
     height: 50px;
     margin: 8px;
 }
@@ -35,9 +35,9 @@
 }
 
 .bottom {
-    position:absolute;
-    align-self: center;
-    bottom: 5%;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
 }
 
 .right {

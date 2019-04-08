@@ -5,34 +5,33 @@ import Paper from '@material-ui/core/Paper';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Typography from '@material-ui/core/Typography';
 import {Link} from "react-router-dom";
-import brain from './../brain.jpg';
+import brain from './../brain.png';
 import './Login.css';
 import axios from "axios";
+import {sha256} from "js-sha256";
 
 export class Login extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = {username: "", password: ""};
+        this.state = {username: "", password: "",errorMessage:""};
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
     handleSubmit(e) {
         e.preventDefault();
-        let login = false;
-        axios.post("https://api-task-planner.herokuapp.com/user/login",
+        axios.post("https://api-task-planner.herokuapp.com/login",
             {
                 username: this.state.username,
-                password: this.state.password
+                password: sha256(this.state.password)
             }).then((response) => {
                 localStorage.setItem("accessToken", response.data.accessToken);
                 localStorage.setItem('page', "home");
                 localStorage.setItem('username', this.state.username);
                 this.props.reloadPage();
-        }).catch(function (error) {
+        }).catch( (error) => {
             console.log(error);
-            alert("Wrong credentials");
-            this.setState({username: "", password: ""});
+            this.setState({username: "", password: "",errorMessage:"Wrong credentials"});
         });
     }
 
@@ -47,6 +46,7 @@ export class Login extends React.Component {
                             Task Planner
                         </Typography>
                         <img src={brain} alt="logo" className="img"/>
+                        <Typography color="error" gutterBottom>{this.state.errorMessage}</Typography>
                         <form className="form" onSubmit={this.handleSubmit}>
                             <TextField required label="Username" fullWidth
                                        onChange={event => this.setState({username: event.target.value})}/>

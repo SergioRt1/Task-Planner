@@ -18,7 +18,7 @@ const styles = theme => ({
 function FloatingActionButton(props) {
     const {classes} = props;
     return (
-            <Fab color="primary" aria-label="Add" className={classes.fab} onClick={props.callback}>
+            <Fab color="secondary" aria-label="Add" className={classes.fab} onClick={props.callback}>
                 {props.icon}
             </Fab>
     );

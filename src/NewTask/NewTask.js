@@ -7,23 +7,18 @@ import CheckCircle from '@material-ui/icons/CheckCircle';
 import FormControl from "@material-ui/core/FormControl";
 import InputLabel from "@material-ui/core/InputLabel";
 import Select from "@material-ui/core/Select";
-import {MuiPickersUtilsProvider, DatePicker} from 'material-ui-pickers';
+import {DatePicker, MuiPickersUtilsProvider} from 'material-ui-pickers';
 import DateFnsUtils from '@date-io/date-fns';
 import FormLabel from "@material-ui/core/FormLabel";
 import 'date-fns';
-import axios from "axios";
+import {AxiosInstance} from "../AxiosInstance";
 
 class NewTask extends Component {
 
     constructor(props) {
         super(props);
         this.state = {description: "", name: "", email: "", status: "", dueDate: new Date()};
-        this.handleSubmit = this.handleSubmit.bind(this)
-        this.tokenAxios = axios.create({
-            timeout: 1000,
-            headers: {'Authorization': 'Bearer ' + localStorage.getItem("accessToken")},
-            baseURL: "https://api-task-planner.herokuapp.com/api"
-        });
+        this.handleSubmit = this.handleSubmit.bind(this);
     }
 
 
@@ -39,7 +34,7 @@ class NewTask extends Component {
             "dueDate": this.state.dueDate.getTime(),
             "owner": localStorage.getItem('username')
         };
-        this.tokenAxios.post("/tasks",data);
+        AxiosInstance.getInstance().post("/tasks",data);
         this.props.callback(data);
         this.setState({description: "", name: "", email: "", status: "", dueDate: new Date()});
 

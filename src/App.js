@@ -4,25 +4,39 @@ import {Login} from './Login/Login';
 import {BrowserRouter, Route, Switch} from "react-router-dom";
 import PersistentDrawerLeft from "./Drawer/Drawer";
 import NewUser from "./NewUser/NewUser";
+import {createMuiTheme, MuiThemeProvider} from "@material-ui/core/styles";
+import {AxiosInstance} from "./AxiosInstance";
 
+const theme = createMuiTheme({
+    palette: {
+        common: {black: "#000", white: "#fff"},
+        background: {paper: "rgba(225, 205, 151, 1)", default: "#FFE591"},
+        primary: {
+            light: "rgba(255, 116, 0, 0.69)",
+            main: "rgba(255, 116, 0, 1)",
+            dark: "rgba(255, 80, 0, 1)",
+            contrastText: "#fff"
+        },
+        secondary: {
+            light:"#F7B442",
+            main:"#FFA000",
+            dark:"#D28503",
+            contrastText:"#fff"
+        }
+    }
+});
 
 class App extends Component {
 
     constructor(props) {
         super(props);
-        const lastUsername = localStorage.getItem('username');
-        let t = JSON.parse(localStorage.getItem("tasks"));
-        if(JSON.parse(localStorage.getItem("tasks")) === null) t = [];
         this.state = {
-            tasks: t,
-            info: JSON.parse(localStorage.getItem(lastUsername)),
             page: localStorage.getItem('page')
         };
         this.reloadPage = this.reloadPage.bind(this);
+        AxiosInstance.setCallback(this.reloadPage)
     }
 
-    componentDidMount() {
-    }
 
     reloadPage() {
         this.setState({page: localStorage.getItem('page')})
@@ -30,14 +44,12 @@ class App extends Component {
 
     render() {
         return (
-            <div>
+            <MuiThemeProvider theme={theme}>
                 {this.state.page === 'home' ?
                     <BrowserRouter>
                         <Switch>
                             <Route exact path="/"
-                                   render={() => <PersistentDrawerLeft info={this.state.info}
-                                                                       tasks={this.state.tasks}
-                                                                       reloadPage={this.state.reloadPage}/>}/>
+                                   render={() => <PersistentDrawerLeft reloadPage={this.reloadPage}/>}/>
                         </Switch>
                     </BrowserRouter>
                     : <BrowserRouter>
@@ -48,39 +60,9 @@ class App extends Component {
                         </Switch>
                     </BrowserRouter>
                 }
-            </div>
+            </MuiThemeProvider>
         );
     }
 }
 
 export default App;
-
-const tasksList = [
-    {
-        "description": "Implementation",
-        "responsible": {
-            "name": "Sergio Rodriguez",
-            "email": "sergio200035@gmail"
-        },
-        "status": "Completed",
-        "dueDate": 956464645646
-    },
-    {
-        "description": "some description text ",
-        "responsible": {
-            "name": "Santiago Carrillo",
-            "email": "sancarbar@gmail"
-        },
-        "status": "Ready",
-        "dueDate": 156464648649
-    },
-    {
-        "description": "Pass everything ",
-        "responsible": {
-            "name": "Sergio Rodriguez",
-            "email": "sergio200035@gmail"
-        },
-        "status": "In Progress",
-        "dueDate": 999999999999
-    }
-];
