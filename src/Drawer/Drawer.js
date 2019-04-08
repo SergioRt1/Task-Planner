@@ -81,12 +81,12 @@ const styles = theme => ({
     },
     content: {
         flexGrow: 1,
-        padding: theme.spacing.unit * 2,
+        padding: theme.spacing.unit * 3,
         transition: theme.transitions.create('margin', {
             easing: theme.transitions.easing.sharp,
             duration: theme.transitions.duration.leavingScreen,
         }),
-        marginLeft: -drawerWidth,
+
     },
     contentShift: {
         transition: theme.transitions.create('margin', {
@@ -224,7 +224,7 @@ class PersistentDrawerLeft extends React.Component {
                         >
                             <MenuIcon/>
                         </IconButton>
-                        <Typography variant="h6" color="inherit" >
+                        <Typography variant="h6" color="inherit" noWrap>
                             Task planner
                         </Typography>
                         <div className={classes.grow}/>
@@ -245,7 +245,7 @@ class PersistentDrawerLeft extends React.Component {
                 </AppBar>
                 <Drawer
                     className={classes.drawer}
-                    variant="persistent"
+                    variant="temporary"
                     anchor="left"
                     open={open}
                     classes={{
