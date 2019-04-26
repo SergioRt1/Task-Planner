@@ -7,12 +7,13 @@ import Button from "@material-ui/core/Button";
 import {Redirect} from "react-router-dom";
 import axios from "axios";
 import CssBaseline from "@material-ui/core/CssBaseline";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 class NewUser extends Component {
 
     constructor(props) {
         super(props);
-        this.state = {name: "", email: "",username: "", password: "", confirmPassword: "", doRedirect: false, errorMessage: ""};
+        this.state = {name: "", email: "",username: "", password: "", confirmPassword: "", doRedirect: false, errorMessage: "",loading:false};
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
@@ -32,17 +33,17 @@ class NewUser extends Component {
             "name": this.state.name,
             "email": this.state.email
         };
+        this.setState({loading:true});
         axios.post("https://api-task-planner.herokuapp.com/register",user).then(() => {
-            this.setState({name: "", email: "", password: "", confirmPassword: "",doRedirect: true});
+            this.setState({name: "", email: "", password: "", confirmPassword: "",doRedirect: true,loading:false});
         }).catch((error) => {
             console.log(error);
-            alert(error);
-            this.setState({errorMessage: "User with selected username already exists"});
+            this.setState({errorMessage: "User with selected username already exists",loading:false});
         });
     }
 
     clear = () => {
-        this.setState({name: "", email: "", username:"", password: "", confirmPassword: "",errorMessage: ""})
+        this.setState({name: "", email: "", username:"", password: "", confirmPassword: "",errorMessage: "",loading:false})
     };
 
     render() {
@@ -65,15 +66,16 @@ class NewUser extends Component {
                         <TextField required label="Confirm password" type="password" fullWidth value={this.state.confirmPassword}
                                    onChange={event => this.setState({confirmPassword: event.target.value})}/>
                         <br/><br/>
-                        <Button type="submit" color="primary" variant="contained" fullWidth>
+                        <Button type="submit" color="primary" variant="contained" fullWidth disabled={this.state.loading}>
                             Create account
                         </Button>
                         <br/><br/>
-                        <Button type="button" onClick={this.clear} color="primary" variant="contained" fullWidth>
+                        <Button type="button" onClick={this.clear} color="primary" variant="contained" fullWidth disabled={this.state.loading}>
                             Clear
                         </Button>
                         {this.state.doRedirect && <Redirect to={"/"}/>}
                     </form>
+                    {this.state.loading && <CircularProgress style={{marginTop:"4%"}}/>}
                 </Paper>
             </React.Fragment>
         );

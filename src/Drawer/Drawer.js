@@ -31,6 +31,7 @@ import ListItemIcon from "@material-ui/core/ListItemIcon";
 import MenuList from "@material-ui/core/MenuList";
 import {AxiosInstance} from "../AxiosInstance";
 import EditUser from "../EditUser/EditUser";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 const drawerWidth = 256;
 
@@ -111,7 +112,7 @@ class PersistentDrawerLeft extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = {open: false, tasks: [], openModal: false, openModalNew: false, userInfo: {name:"",email:""},openModalUser: false};
+        this.state = {open: false, tasks: [], openModal: false, openModalNew: false, userInfo: {name:"",email:""},openModalUser: false, loading: false};
         this.changeState = this.changeState.bind(this);
         this.formNewTask = this.formNewTask.bind(this);
         this.updateUserInfo = this.updateUserInfo.bind(this);
@@ -119,21 +120,7 @@ class PersistentDrawerLeft extends React.Component {
     }
 
     componentDidMount() {
-        const username = localStorage.getItem('username');
-        AxiosInstance.getInstance().get('/user/' + username)
-            .then(response => {
-                this.setState({userInfo: response.data});
-            });
-        AxiosInstance.getInstance().get('/tasks/byUser/'+username)
-            .then(response => {
-                let tasks = [];
-                response.data.forEach(function (task) {
-                    tasks.push(task)
-                });
-                localStorage.setItem('tasks', JSON.stringify(tasks));
-                this.setState({tasks: tasks});
-            });
-
+        this.loadUserData();
     }
 
     handleDrawerOpen = () => {
@@ -181,6 +168,17 @@ class PersistentDrawerLeft extends React.Component {
     componentWillUpdate(nextProps, nextState, nextContext) {
         if (nextProps.tasks !== this.props.tasks)
             this.setState({tasks: nextProps.tasks})
+    }
+
+    async loadUserData(){
+        const username = localStorage.getItem('username');
+        this.setState({loading: true});
+        const userInfo = await AxiosInstance.getInstance().get('/user/' + username);
+        const userTasks = await AxiosInstance.getInstance().get('/tasks/byUser/'+username);
+        const tasks = [];
+        userTasks.data.forEach(task => tasks.push(task));
+        localStorage.setItem('tasks', JSON.stringify(tasks));
+        this.setState({userInfo: userInfo.data, tasks: tasks, loading: false});
     }
 
     formNewTask(newTask) {
@@ -313,9 +311,15 @@ class PersistentDrawerLeft extends React.Component {
                     })}
                 >
                     <div className={classes.drawerHeader}/>
-                    {this.state.tasks.map((task, id) => {
-                        return (<CardTask info={task} key={id} callback={this.removeTask}/>);
-                    })}
+                    {this.state.loading?
+                        <CircularProgress size={100} style={{position:"relative", left:"50%", right:"50%", marginLeft:-50}}/>
+                        :
+                        <>
+                            {this.state.tasks.map((task, id) => {
+                                return (<CardTask info={task} key={id} callback={this.removeTask}/>);
+                            })}
+                        </>
+                    }
                     <div className="right">
                         <FloatingActionButton icon={<AddIcon/>} callback={this.handleModalNewOpen}/>
                         <Modal

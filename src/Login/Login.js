@@ -8,17 +8,19 @@ import {Link} from "react-router-dom";
 import brain from './../brain.png';
 import './Login.css';
 import axios from "axios";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 export class Login extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = {username: "", password: "",errorMessage:""};
+        this.state = {username: "", password: "",errorMessage:"",loading:false};
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
     handleSubmit(e) {
         e.preventDefault();
+        this.setState({loading:true});
         axios.post("https://api-task-planner.herokuapp.com/login",
             {
                 username: this.state.username,
@@ -30,7 +32,7 @@ export class Login extends React.Component {
                 this.props.reloadPage();
         }).catch( (error) => {
             console.log(error);
-            this.setState({username: "", password: "",errorMessage:"Wrong credentials"});
+            this.setState({username: "", password: "",errorMessage:"Wrong credentials",loading:false});
         });
     }
 
@@ -38,6 +40,7 @@ export class Login extends React.Component {
     render() {
         return (
             <React.Fragment>
+
                 <CssBaseline/>
                 <main className="layout">
                     <Paper elevation={5} className="paper">
@@ -52,12 +55,13 @@ export class Login extends React.Component {
                             <TextField required label="Password" type="password" fullWidth
                                        onChange={event => this.setState({password: event.target.value})}/>
                             <br/><br/>
-                            <Button type="submit" color="primary" variant="contained" fullWidth>
+                            <Button type="submit" color="primary" variant="contained" fullWidth disabled={this.state.loading}>
                                 Login
                             </Button>
                         </form>
                         <br/>
                         <Link to={"/NewUser"}>Create account</Link>
+                        {this.state.loading && <CircularProgress style={{marginTop:"4%"}}/>}
                     </Paper>
                 </main>
             </React.Fragment>
