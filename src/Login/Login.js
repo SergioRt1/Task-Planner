@@ -8,7 +8,6 @@ import {Link} from "react-router-dom";
 import brain from './../brain.png';
 import './Login.css';
 import axios from "axios";
-import {sha256} from "js-sha256";
 
 export class Login extends React.Component {
 
@@ -23,7 +22,7 @@ export class Login extends React.Component {
         axios.post("https://api-task-planner.herokuapp.com/login",
             {
                 username: this.state.username,
-                password: sha256(this.state.password)
+                password: this.state.password
             }).then((response) => {
                 localStorage.setItem("accessToken", response.data.accessToken);
                 localStorage.setItem('page', "home");

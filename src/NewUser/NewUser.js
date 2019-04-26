@@ -6,7 +6,6 @@ import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import {Redirect} from "react-router-dom";
 import axios from "axios";
-import {sha256} from "js-sha256";
 import CssBaseline from "@material-ui/core/CssBaseline";
 
 class NewUser extends Component {
@@ -29,7 +28,7 @@ class NewUser extends Component {
     createUser() {
         const user = {
             "username": this.state.username,
-            "password": sha256(this.state.password),
+            "password": this.state.password,
             "name": this.state.name,
             "email": this.state.email
         };

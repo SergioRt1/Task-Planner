@@ -35,7 +35,7 @@ export function register(config) {
         console.log("install!!");
     });
 
-    let dataCacheName = 'TaskPlanner';
+    let dataCacheName = 'TaskPlannerV2';
 
     window.addEventListener('fetch', (e) => {
         console.log('[Service Worker] Fetch', e.request.url);
